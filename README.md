@@ -1,3 +1,11 @@
+# Sample Code
+
+This is some sample code of mine. I copied over some code mostly to show what some of my code looks like. For this project I was curious to play around with some of the React Hooks API. This is from a client POC, so it hasn't been fully optimized for production. Before the POC is finished, I would go back and optimize code to reduce the number of unnecessary renders.
+
+
+
+## Boilerplate Code Information
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
