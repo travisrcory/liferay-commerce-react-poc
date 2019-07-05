@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.coverage-container input {
+  padding-right: 22px;
+  position: relative;
+}
+
+.percentage {
+  font-weight: bold;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+}

@@ -1,28 +1,24 @@
-export interface IReviewMatrixAccount {
-	demandCaptureOrderAccountId: number;
-	commerceAccountId: number;
+export interface IReviewMatrixStore {
+	demandCaptureOrderRegionId: number | string;
+	demandCaptureOrderStoreId: number | string;
 	name: string;
 	storesNumber: number;
-	type: string;
+	type: string | number;
 }
 
 export interface IReviewMatrixProduct {
-	demandCaptureOrderProductId: number;
-	cpInstanceId: number;
-	name: string;
+	cpInstanceId: number | string;
+	demandCaptureOrderProductId: number | string;
 	discount: number;
+	name: string;
 	price: number;
 }
 
-export interface IReviewMatrixItemDetail {
-	demandCaptureOrderItemId: number;
-	quantity: number;
-}
-
 export interface IReviewMatrixItem {
-	demandCaptureOrderAccountId: number;
+	coverage: number;
 	demandCaptureOrderItemId: number;
-	demandCaptureOrderProductId: number;
+	demandCaptureOrderProductId: number | string;
+	demandCaptureOrderStoreId: number | string;
 	quantity: number;
 }
 
@@ -59,11 +55,10 @@ export interface IDemandCaptureOrder extends IBaseModel {
 }
 
 export interface IRenderParams {
-	accounts: IReviewMatrixAccount[];
+	stores: IReviewMatrixStore[];
 	demandCaptureEntry: IDemandCaptureEntry;
 	demandCaptureOrder: IDemandCaptureOrder;
 	loadingElementId: string;
-	portletElementId: string;
 	portletNamespace: string;
 	products: IReviewMatrixProduct[];
 	reviewMatrixItems: IReviewMatrixItem[];

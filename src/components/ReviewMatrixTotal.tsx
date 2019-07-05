@@ -1,17 +1,14 @@
 import React from 'react';
 import ClayTable from '@clayui/table';
 
-import LanguageKeys from '../util/language';
-
-import {
-	IReviewMatrixAccount,
-	IReviewMatrixItem,
-	IReviewMatrixProduct,
-} from '../util/interfaces';
+import {IReviewMatrixItem, IReviewMatrixStore} from '../util/interfaces';
+import {StoreType} from '../util/constants';
 
 interface IReviewMatrixTotalProps {
-	demandCaptureOrderProductId: number;
+	stores: IReviewMatrixStore[];
+	demandCaptureOrderProductId: number | string;
 	price: number;
+	currentPhase: number;
 	index: number;
 	reviewMatrixItems: IReviewMatrixItem[];
 }
@@ -25,7 +22,17 @@ class ReviewMatrixTotal extends React.Component<IReviewMatrixTotalProps> {
 	}
 
 	shouldComponentUpdate(nextProps: IReviewMatrixTotalProps) {
+		if (
+			this.props.currentPhase !== nextProps.currentPhase ||
+			this.props.reviewMatrixItems.length !==
+				nextProps.reviewMatrixItems.length ||
+			this.props.stores.length !== nextProps.stores.length
+		) {
+			return true;
+		}
+
 		let shouldComponentUpdate = false;
+
 		for (
 			let index = 0;
 			index < this.props.reviewMatrixItems.length;
@@ -33,7 +40,8 @@ class ReviewMatrixTotal extends React.Component<IReviewMatrixTotalProps> {
 		) {
 			if (
 				this.props.reviewMatrixItems[index].quantity !==
-				nextProps.reviewMatrixItems[index].quantity
+					nextProps.reviewMatrixItems[index].quantity ||
+				nextProps.stores[index].type == StoreType.NRS
 			) {
 				shouldComponentUpdate = true;
 				break;
@@ -55,11 +63,7 @@ class ReviewMatrixTotal extends React.Component<IReviewMatrixTotalProps> {
 	};
 
 	render() {
-		return (
-			<ClayTable.Cell className="bg-transparent">
-				{this.getProductTotal()}
-			</ClayTable.Cell>
-		);
+		return <ClayTable.Cell>${this.getProductTotal()}</ClayTable.Cell>;
 	}
 }
 
