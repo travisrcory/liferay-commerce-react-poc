@@ -7,26 +7,25 @@ import LanguageKeys from '../util/language';
 import {IReviewMatrixStore, IReviewMatrixItem} from '../util/interfaces';
 import {StoreType, Status} from '../util/constants';
 
-interface IReviewMatrixItemCellsProps {
+interface IItemCellsProps {
 	store: IReviewMatrixStore;
 	index: number;
 	reviewMatrixItem: IReviewMatrixItem;
 	reviewMatrixItems: IReviewMatrixItem[];
 	setStateFn: React.Dispatch<React.SetStateAction<IReviewMatrixItem[]>>;
 	currentPhase: number;
+	readOnly: boolean;
 }
 
 // TODO: Implement as FunctionComponent
 // Using class to make use of shouldComponentUpdate to improve performance
 
-class ReviewMatrixItemCells extends React.Component<
-	IReviewMatrixItemCellsProps
-> {
-	constructor(props: IReviewMatrixItemCellsProps) {
+class ItemCells extends React.Component<IItemCellsProps> {
+	constructor(props: IItemCellsProps) {
 		super(props);
 	}
 
-	shouldComponentUpdate(nextProps: IReviewMatrixItemCellsProps) {
+	shouldComponentUpdate(nextProps: IItemCellsProps) {
 		if (this.props.currentPhase !== nextProps.currentPhase) {
 			return true;
 		}
@@ -44,14 +43,12 @@ class ReviewMatrixItemCells extends React.Component<
 	}
 
 	handleQuantityChange = (
-		value: string,
+		value: number,
 		setStateFn: React.Dispatch<React.SetStateAction<IReviewMatrixItem[]>>,
 		reviewMatrixItem: IReviewMatrixItem,
 		reviewMatrixItems: IReviewMatrixItem[],
 		index: number
 	) => {
-		const numberValue = Number(value);
-
 		return setStateFn([
 			...reviewMatrixItems.slice(0, index),
 			Object.assign(
@@ -59,10 +56,9 @@ class ReviewMatrixItemCells extends React.Component<
 				reviewMatrixItem,
 				this.props.currentPhase === Status.RUNNING
 					? {
-							coverage: numberValue / 100,
+							coverage: value / 100,
 							quantity: Math.ceil(
-								(numberValue / 100) *
-									this.props.store.storesNumber
+								(value / 100) * this.props.store.storesNumber
 							),
 					  }
 					: {quantity: value}
@@ -82,16 +78,17 @@ class ReviewMatrixItemCells extends React.Component<
 							this.props.currentPhase === Status.RUNNING,
 					})}
 				>
-					<label
+					{/* <label
+						className='text-truncate'
 						htmlFor={`reviewMatrixItem-${this.props.reviewMatrixItem.demandCaptureOrderStoreId}-${this.props.reviewMatrixItem.demandCaptureOrderProductId}`}
 					>
 						{this.props.currentPhase === Status.RUNNING
 							? LanguageKeys.STORE_COVERAGE
 							: LanguageKeys.QUANTITY}
-					</label>
+					</label> */}
 
 					<input
-						className="form-control"
+						className="form-control text-right"
 						id={`reviewMatrixItem-${this.props.reviewMatrixItem.demandCaptureOrderStoreId}-${this.props.reviewMatrixItem.demandCaptureOrderProductId}`}
 						max={
 							this.props.currentPhase === Status.RUNNING
@@ -106,15 +103,14 @@ class ReviewMatrixItemCells extends React.Component<
 						min={0}
 						onChange={e =>
 							this.handleQuantityChange(
-								e.currentTarget.value,
+								Number(e.currentTarget.value),
 								this.props.setStateFn,
 								this.props.reviewMatrixItem,
 								this.props.reviewMatrixItems,
 								this.props.index
 							)
 						}
-						placeholder=""
-						readOnly={this.props.store.type === StoreType.NRS}
+						readOnly={this.props.readOnly}
 						type="number"
 						value={
 							this.props.currentPhase === Status.RUNNING
@@ -134,4 +130,4 @@ class ReviewMatrixItemCells extends React.Component<
 	}
 }
 
-export default ReviewMatrixItemCells;
+export default ItemCells;

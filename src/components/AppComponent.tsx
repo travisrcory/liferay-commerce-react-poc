@@ -23,12 +23,10 @@ const AppComponent: React.FunctionComponent<IRenderParams> = ({
 	useEffect(() => {
 		const loadingIndicator = document.getElementById(loadingElementId);
 
-		console.log('load');
-
 		if (loadingIndicator) {
 			loadingIndicator.classList.add('d-none');
 		}
-	}, [loadingElementId]);
+	});
 
 	// FOR TESTING
 	const getStatues = (): JSX.Element[] => {
@@ -50,8 +48,9 @@ const AppComponent: React.FunctionComponent<IRenderParams> = ({
 	};
 
 	return (
-		<div className="container-fluid">
+		<div>
 			{/* FOR TESTING */}
+
 			<div className="form-group">
 				<label htmlFor={'statusSelect'}>{LanguageKeys.STATUS}</label>
 
@@ -78,7 +77,8 @@ const AppComponent: React.FunctionComponent<IRenderParams> = ({
 				products={products}
 				reviewMatrixItems={reviewMatrixItems}
 				status={status}
-				currentPhase={demandCaptureEntry.currentPhase}
+				currentPhase={status}
+				// currentPhase={demandCaptureEntry.currentPhase}
 				updateOrderActionURL={updateOrderActionURL}
 			/>
 		</div>

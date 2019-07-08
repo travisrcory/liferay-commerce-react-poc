@@ -1,21 +1,24 @@
 import React, {useContext, useEffect} from 'react';
 import ClayTable from '@clayui/table';
 
-import ReviewMatrixItemCells from './ReviewMatrixItemCells';
+import ItemCells from './ItemCells';
+import StoreStatus from './StoreStatus';
+
 import ReviewMatrixItemContext from '../context/ReviewMatrixItemContext';
+import RegionContext from '../context/RegionContext';
 import StoreContext from '../context/StoreContext';
 
-import ReviewMatrixStoreStatus from './ReviewMatrixStoreStatus';
 import {StoreType} from '../util/constants';
 import {IReviewMatrixStore} from '../util/interfaces';
-import RegionContext from '../context/RegionContext';
 
-interface IReviewMatrixProps {
+interface IMatrixProps {
 	currentPhase: number;
+	readOnly: boolean;
 }
 
-const ReviewMatrix: React.FunctionComponent<IReviewMatrixProps> = ({
+const Matrix: React.FunctionComponent<IMatrixProps> = ({
 	currentPhase,
+	readOnly = false,
 }) => {
 	const [stores, setStores] = useContext(StoreContext);
 	const [regionId] = useContext(RegionContext);
@@ -30,7 +33,7 @@ const ReviewMatrix: React.FunctionComponent<IReviewMatrixProps> = ({
 			}
 		});
 
-		setReviewMatrixItems(
+		return setReviewMatrixItems(
 			reviewMatrixItems.map(reviewMatrixItem => {
 				if (
 					demandCaptureOrderStoreIds.indexOf(
@@ -44,7 +47,7 @@ const ReviewMatrix: React.FunctionComponent<IReviewMatrixProps> = ({
 				return reviewMatrixItem;
 			})
 		);
-	}, [reviewMatrixItems, setReviewMatrixItems, stores]);
+	}, [stores]);
 
 	const renderMatrixCells = (store: IReviewMatrixStore) =>
 		reviewMatrixItems.map((reviewMatrixItem, index) => {
@@ -53,7 +56,7 @@ const ReviewMatrix: React.FunctionComponent<IReviewMatrixProps> = ({
 				store.demandCaptureOrderStoreId
 			) {
 				return (
-					<ReviewMatrixItemCells
+					<ItemCells
 						key={`reviewMatrixItemCells-${reviewMatrixItem.demandCaptureOrderStoreId}-${reviewMatrixItem.demandCaptureOrderProductId}`}
 						store={store}
 						index={index}
@@ -61,6 +64,7 @@ const ReviewMatrix: React.FunctionComponent<IReviewMatrixProps> = ({
 						reviewMatrixItems={reviewMatrixItems}
 						setStateFn={setReviewMatrixItems}
 						currentPhase={currentPhase}
+						readOnly={store.type === StoreType.NRS || readOnly}
 					/>
 				);
 			}
@@ -78,16 +82,20 @@ const ReviewMatrix: React.FunctionComponent<IReviewMatrixProps> = ({
 						<ClayTable.Row
 							key={`storeRow-${store.demandCaptureOrderStoreId}`}
 						>
-							<ClayTable.Cell headingTitle>
-								{store.name}
+							<ClayTable.Cell
+								className="sticky-left-data"
+								headingTitle
+							>
+								{`${store.name} / ${store.storesNumber}`}
 							</ClayTable.Cell>
 
-							<ReviewMatrixStoreStatus
+							<StoreStatus
 								store={store}
 								stores={stores}
 								setStateFn={setStores}
 								currentPhase={currentPhase}
 								index={index}
+								readOnly={readOnly}
 							/>
 
 							{renderMatrixCells(store)}
@@ -101,4 +109,4 @@ const ReviewMatrix: React.FunctionComponent<IReviewMatrixProps> = ({
 	);
 };
 
-export default ReviewMatrix;
+export default Matrix;

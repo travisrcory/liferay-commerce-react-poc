@@ -1,4 +1,4 @@
-import React, {SetStateAction, OptionHTMLAttributes} from 'react';
+import React, {SetStateAction, OptionHTMLAttributes, ReactText} from 'react';
 import ClayTable from '@clayui/table';
 import ClaySelect from '@clayui/select';
 
@@ -23,21 +23,20 @@ const options: OptionHTMLAttributes<HTMLOptionElement>[] = [
 	},
 ];
 
-interface IReviewMatrixStoreStatusProps {
+interface IStoreStatusProps {
 	store: IReviewMatrixStore;
 	stores: IReviewMatrixStore[];
 	index: number;
 	setStateFn: React.Dispatch<SetStateAction<IReviewMatrixStore[]>>;
 	currentPhase: number;
+	readOnly: boolean;
 }
 
 // TODO: Implement as FunctionComponent
 // Using class to make use of shouldComponentUpdate to improve performance
 
-class ReviewMatrixStoreStatus extends React.Component<
-	IReviewMatrixStoreStatusProps
-> {
-	constructor(props: IReviewMatrixStoreStatusProps) {
+class StoreStatus extends React.Component<IStoreStatusProps> {
+	constructor(props: IStoreStatusProps) {
 		super(props);
 	}
 
@@ -55,19 +54,40 @@ class ReviewMatrixStoreStatus extends React.Component<
 		]);
 	};
 
-	shouldComponentUpdate(nextProps: IReviewMatrixStoreStatusProps) {
-		return this.props.store.type !== nextProps.store.type;
+	shouldComponentUpdate(nextProps: IStoreStatusProps) {
+		return (
+			this.props.store.type !== nextProps.store.type ||
+			this.props.readOnly !== nextProps.readOnly
+		);
 	}
+
+	getStoreTypeLabel = (storeType: ReactText) => {
+		let label = '';
+
+		let index = 0;
+
+		while (options[index]) {
+			if (options[index].value === `${storeType}`) {
+				label = getString(options[index].label);
+
+				break;
+			}
+
+			index++;
+		}
+
+		return label;
+	};
 
 	render() {
 		return (
 			<ClayTable.Cell>
 				<div className="form-group">
-					<label htmlFor={'statusSelect' + this.props.index}>
-						{LanguageKeys.STORE_STATUS}
-					</label>
-
-					{this.props.currentPhase === Status.RUNNING ? (
+					{this.props.readOnly ? (
+						<span>
+							{this.getStoreTypeLabel(this.props.store.type)}
+						</span>
+					) : (
 						<ClaySelect
 							aria-label={getString(LanguageKeys.STORE_STATUS)}
 							id={'statusSelect' + this.props.index}
@@ -90,8 +110,6 @@ class ReviewMatrixStoreStatus extends React.Component<
 								/>
 							))}
 						</ClaySelect>
-					) : (
-						<span>{this.props.store.type}</span>
 					)}
 				</div>
 			</ClayTable.Cell>
@@ -99,4 +117,4 @@ class ReviewMatrixStoreStatus extends React.Component<
 	}
 }
 
-export default ReviewMatrixStoreStatus;
+export default StoreStatus;

@@ -1,31 +1,32 @@
 import React, {useContext} from 'react';
 import ClayTable from '@clayui/table';
 
+import NextPriceBreak from './NextPriceBreak';
+import ItemTotal from './ItemTotal';
+import TotalQuantity from './TotalQuantity';
+
 import ReviewMatrixItemContext from '../context/ReviewMatrixItemContext';
+import StoreContext from '../context/StoreContext';
+import RegionContext from '../context/RegionContext';
+import ProductContext from '../context/ProductContext';
 
 import LanguageKeys from '../util/language';
 
-import {
-	IReviewMatrixProduct,
-	IReviewMatrixItem,
-	IReviewMatrixStore,
-} from '../util/interfaces';
-import ReviewMatrixTotal from './ReviewMatrixTotal';
-import ReviewMatrixTotalQuantity from './ReviewMatrixTotalQuantity';
-import StoreContext from '../context/StoreContext';
-import RegionContext from '../context/RegionContext';
+import {IReviewMatrixItem, IReviewMatrixStore} from '../util/interfaces';
+import DiscountInput from './DiscountInput';
 
-interface IReviewMatrixTotalsProps {
-	products: IReviewMatrixProduct[];
+interface ITotalsProps {
 	currentPhase: number;
+	showDiscountBox: boolean;
 }
 
-const ReviewMatrixTotals: React.FunctionComponent<IReviewMatrixTotalsProps> = ({
-	products,
+const Totals: React.FunctionComponent<ITotalsProps> = ({
 	currentPhase,
+	showDiscountBox = false,
 }) => {
 	const [reviewMatrixItems] = useContext(ReviewMatrixItemContext);
 	const [stores] = useContext(StoreContext);
+	const [products, setProducts] = useContext(ProductContext);
 	const [regionId] = useContext(RegionContext);
 
 	const getFilteredMatrixItems = (demandCaptureOrderProductId: string) => {
@@ -97,14 +98,20 @@ const ReviewMatrixTotals: React.FunctionComponent<IReviewMatrixTotalsProps> = ({
 		return filteredStores as IReviewMatrixStore[];
 	};
 
+	const discountRows: JSX.Element[] = [];
 	const nextPriceBreakRow: JSX.Element[] = [];
 	const totalAggregatedQuantityRows: JSX.Element[] = [];
 	const totalQuantityRows: JSX.Element[] = [];
 	const totalRows: JSX.Element[] = [];
+	const discountedTotalsRows: JSX.Element[] = [];
 
-	products.map(({demandCaptureOrderProductId, price}, index) => {
+	let productIndex = 0;
+
+	while (products[productIndex]) {
+		const product = products[productIndex];
+
 		let filteredMatrixItems = getFilteredMatrixItems(
-			demandCaptureOrderProductId as string
+			product.demandCaptureOrderProductId as string
 		);
 
 		const filteredStores = getFilteredStores(filteredMatrixItems);
@@ -119,57 +126,86 @@ const ReviewMatrixTotals: React.FunctionComponent<IReviewMatrixTotalsProps> = ({
 		);
 
 		nextPriceBreakRow.push(
-			<ReviewMatrixTotal
-				stores={filteredStores}
+			<NextPriceBreak
+				key={`productTotal${product.demandCaptureOrderProductId}`}
 				reviewMatrixItems={refinedMatrixItems}
-				demandCaptureOrderProductId={demandCaptureOrderProductId}
-				price={price}
-				index={index}
-				key={`productTotal${demandCaptureOrderProductId}`}
-				currentPhase={currentPhase}
 			/>
 		);
 
 		totalAggregatedQuantityRows.push(
-			<ReviewMatrixTotal
-				stores={filteredStores}
-				reviewMatrixItems={refinedMatrixItems}
-				demandCaptureOrderProductId={demandCaptureOrderProductId}
-				price={price}
-				index={index}
-				key={`productTotal${demandCaptureOrderProductId}`}
+			<TotalQuantity
 				currentPhase={currentPhase}
+				demandCaptureOrderProductId={
+					product.demandCaptureOrderProductId
+				}
+				index={productIndex}
+				key={`productTotalQuantity${product.demandCaptureOrderProductId}`}
+				reviewMatrixItems={refinedMatrixItems}
+				stores={filteredStores}
 			/>
 		);
 
 		totalQuantityRows.push(
-			<ReviewMatrixTotalQuantity
-				reviewMatrixItems={refinedMatrixItems}
-				demandCaptureOrderProductId={demandCaptureOrderProductId}
-				stores={filteredStores}
-				index={index}
-				key={`productTotalQuantity${demandCaptureOrderProductId}`}
+			<TotalQuantity
 				currentPhase={currentPhase}
+				demandCaptureOrderProductId={
+					product.demandCaptureOrderProductId
+				}
+				index={productIndex}
+				key={`productTotalQuantity${product.demandCaptureOrderProductId}`}
+				reviewMatrixItems={refinedMatrixItems}
+				stores={filteredStores}
 			/>
 		);
 
 		totalRows.push(
-			<ReviewMatrixTotal
-				stores={filteredStores}
-				reviewMatrixItems={refinedMatrixItems}
-				demandCaptureOrderProductId={demandCaptureOrderProductId}
-				price={price}
-				index={index}
-				key={`productTotal${demandCaptureOrderProductId}`}
+			<ItemTotal
 				currentPhase={currentPhase}
+				demandCaptureOrderProductId={
+					product.demandCaptureOrderProductId
+				}
+				index={productIndex}
+				key={`productTotal${product.demandCaptureOrderProductId}`}
+				price={product.price}
+				reviewMatrixItems={refinedMatrixItems}
+				stores={filteredStores}
 			/>
 		);
-	});
+
+		if (showDiscountBox) {
+			discountRows.push(
+				<DiscountInput
+					index={productIndex}
+					key={`discountInput${product.demandCaptureOrderProductId}`}
+					product={product}
+					products={products}
+					setStateFn={setProducts}
+				/>
+			);
+
+			discountedTotalsRows.push(
+				<ItemTotal
+					currentPhase={currentPhase}
+					demandCaptureOrderProductId={
+						product.demandCaptureOrderProductId
+					}
+					discount={product.discount}
+					index={productIndex}
+					key={`discountedTotal${product.demandCaptureOrderProductId}`}
+					price={product.price}
+					reviewMatrixItems={refinedMatrixItems}
+					stores={filteredStores}
+				/>
+			);
+		}
+
+		productIndex ++
+	}
 
 	return (
 		<>
 			<ClayTable.Row>
-				<ClayTable.Cell headingTitle>
+				<ClayTable.Cell className="sticky-left-data" headingTitle>
 					{LanguageKeys.TOTAL_QUANTITY}
 				</ClayTable.Cell>
 
@@ -179,7 +215,7 @@ const ReviewMatrixTotals: React.FunctionComponent<IReviewMatrixTotalsProps> = ({
 			</ClayTable.Row>
 
 			<ClayTable.Row>
-				<ClayTable.Cell headingTitle>
+				<ClayTable.Cell className="sticky-left-data" headingTitle>
 					{LanguageKeys.TOTAL}
 				</ClayTable.Cell>
 
@@ -189,7 +225,7 @@ const ReviewMatrixTotals: React.FunctionComponent<IReviewMatrixTotalsProps> = ({
 			</ClayTable.Row>
 
 			<ClayTable.Row>
-				<ClayTable.Cell headingTitle>
+				<ClayTable.Cell className="sticky-left-data" headingTitle>
 					{LanguageKeys.TOTAL_AGGREGATED_QUANTITY}
 				</ClayTable.Cell>
 
@@ -199,7 +235,7 @@ const ReviewMatrixTotals: React.FunctionComponent<IReviewMatrixTotalsProps> = ({
 			</ClayTable.Row>
 
 			<ClayTable.Row>
-				<ClayTable.Cell headingTitle>
+				<ClayTable.Cell className="sticky-left-data" headingTitle>
 					{LanguageKeys.NEXT_PRICE_BREAK}
 				</ClayTable.Cell>
 
@@ -207,8 +243,38 @@ const ReviewMatrixTotals: React.FunctionComponent<IReviewMatrixTotalsProps> = ({
 
 				{nextPriceBreakRow}
 			</ClayTable.Row>
+
+			{showDiscountBox ? (
+				<>
+					<ClayTable.Row>
+						<ClayTable.Cell
+							className="sticky-left-data"
+							headingTitle
+						>
+							{LanguageKeys.DISCOUNT}
+						</ClayTable.Cell>
+
+						<ClayTable.Cell></ClayTable.Cell>
+
+						{discountRows}
+					</ClayTable.Row>
+
+					<ClayTable.Row>
+						<ClayTable.Cell
+							className="sticky-left-data"
+							headingTitle
+						>
+							{LanguageKeys.DISCOUNTED_TOTAL}
+						</ClayTable.Cell>
+
+						<ClayTable.Cell></ClayTable.Cell>
+
+						{discountedTotalsRows}
+					</ClayTable.Row>
+				</>
+			) : null}
 		</>
 	);
 };
 
-export default ReviewMatrixTotals;
+export default Totals;

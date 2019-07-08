@@ -21,7 +21,7 @@ const MultiStep: React.FunctionComponent<Props> = ({
 					key={index}
 					className={classNames(
 						'multi-step-item',
-						{'multi-step-item-expand': index != totalSteps},
+						{'multi-step-item-expand': index !== totalSteps},
 						{complete: index < currentStep},
 						{active: index === currentStep}
 					)}
@@ -32,10 +32,10 @@ const MultiStep: React.FunctionComponent<Props> = ({
 							{labelPrefix ? labelPrefix + ' ' : ''}
 							{index}
 						</div>
-						<a
+						<span
 							className="multi-step-icon"
 							data-multi-step-icon={index}
-						></a>
+						></span>
 					</div>
 				</li>
 			);

@@ -4,24 +4,21 @@ import ClayTable from '@clayui/table';
 import {IReviewMatrixItem, IReviewMatrixStore} from '../util/interfaces';
 import {StoreType} from '../util/constants';
 
-interface IReviewMatrixTotalProps {
-	stores: IReviewMatrixStore[];
-	demandCaptureOrderProductId: number | string;
-	price: number;
+interface IItemTotalProps {
 	currentPhase: number;
+	demandCaptureOrderProductId: number | string;
+	discount?: number;
 	index: number;
+	price: number;
 	reviewMatrixItems: IReviewMatrixItem[];
+	stores: IReviewMatrixStore[];
 }
 
 // TODO: Implement as FunctionComponent
 // Using class to make use of shouldComponentUpdate to improve performance
 
-class ReviewMatrixTotal extends React.Component<IReviewMatrixTotalProps> {
-	constructor(props: IReviewMatrixTotalProps) {
-		super(props);
-	}
-
-	shouldComponentUpdate(nextProps: IReviewMatrixTotalProps) {
+class ItemTotal extends React.Component<IItemTotalProps> {
+	shouldComponentUpdate(nextProps: IItemTotalProps) {
 		if (
 			this.props.currentPhase !== nextProps.currentPhase ||
 			this.props.reviewMatrixItems.length !==
@@ -39,9 +36,10 @@ class ReviewMatrixTotal extends React.Component<IReviewMatrixTotalProps> {
 			index++
 		) {
 			if (
+				this.props.discount !== nextProps.discount ||
 				this.props.reviewMatrixItems[index].quantity !==
 					nextProps.reviewMatrixItems[index].quantity ||
-				nextProps.stores[index].type == StoreType.NRS
+				nextProps.stores[index].type === StoreType.NRS
 			) {
 				shouldComponentUpdate = true;
 				break;
@@ -52,19 +50,30 @@ class ReviewMatrixTotal extends React.Component<IReviewMatrixTotalProps> {
 	}
 
 	getProductTotal = () => {
-		return this.props.reviewMatrixItems
-			.reduce((accumulator, reviewMatrixItem) => {
+		let total = this.props.reviewMatrixItems.reduce(
+			(accumulator, reviewMatrixItem) => {
 				return (
 					accumulator +
 					Number(reviewMatrixItem.quantity) * this.props.price
 				);
-			}, 0)
-			.toFixed(2);
+			},
+			0
+		);
+
+		if (this.props.discount) {
+			total = total * (1 - this.props.discount);
+		}
+
+		return total.toFixed(2);
 	};
 
 	render() {
-		return <ClayTable.Cell>${this.getProductTotal()}</ClayTable.Cell>;
+		return (
+			<ClayTable.Cell className="sticky-left-data">
+				${this.getProductTotal()}
+			</ClayTable.Cell>
+		);
 	}
 }
 
-export default ReviewMatrixTotal;
+export default ItemTotal;

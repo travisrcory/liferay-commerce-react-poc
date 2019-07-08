@@ -4,7 +4,7 @@ import ClayTable from '@clayui/table';
 import {IReviewMatrixItem, IReviewMatrixStore} from '../util/interfaces';
 import {StoreType} from '../util/constants';
 
-interface IReviewMatrixTotalQuantityProps {
+interface ITotalQuantityProps {
 	stores: IReviewMatrixStore[];
 	demandCaptureOrderProductId: number | string;
 	index: number;
@@ -15,14 +15,8 @@ interface IReviewMatrixTotalQuantityProps {
 // TODO: Implement as FunctionComponent
 // Using class to make use of shouldComponentUpdate to improve performance
 
-class ReviewMatrixTotalQuantity extends React.Component<
-	IReviewMatrixTotalQuantityProps
-> {
-	constructor(props: IReviewMatrixTotalQuantityProps) {
-		super(props);
-	}
-
-	shouldComponentUpdate(nextProps: IReviewMatrixTotalQuantityProps) {
+class TotalQuantity extends React.Component<ITotalQuantityProps> {
+	shouldComponentUpdate(nextProps: ITotalQuantityProps) {
 		if (
 			this.props.currentPhase !== nextProps.currentPhase ||
 			this.props.reviewMatrixItems.length !==
@@ -67,4 +61,4 @@ class ReviewMatrixTotalQuantity extends React.Component<
 	}
 }
 
-export default ReviewMatrixTotalQuantity;
+export default TotalQuantity;

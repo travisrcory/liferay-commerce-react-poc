@@ -21,5 +21,30 @@ code {
   font-weight: bold;
   position: absolute;
   right: 12px;
+  transform: translateY(-50%);
   top: 50%;
+}
+
+.demand-capture-table .form-group {
+  margin: 0;
+}
+
+.store-status-header {
+  min-width: 140px;
+}
+
+td.sticky-left-data {
+  left: 0;
+  position: sticky;
+  z-index: 5;
+}
+
+th.sticky-top-data {
+  top: 0;
+  position: sticky;
+  z-index: 10;
+}
+
+.table-max-height-1000 {
+  max-height: 1000px;
 }
