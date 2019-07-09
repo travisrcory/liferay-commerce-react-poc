@@ -1,6 +1,7 @@
 export interface IReviewMatrixStore {
 	demandCaptureOrderRegionId: number | string;
 	demandCaptureOrderStoreId: number | string;
+	demandCaptureSegmentName: string;
 	name: string;
 	storesNumber: number;
 	type: string | number;

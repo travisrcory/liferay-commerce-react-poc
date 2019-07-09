@@ -64,6 +64,7 @@ for (let index = 0; index < storeNameArray.length; index++) {
 	stores.push({
 		demandCaptureOrderRegionId: `${getRandomInt(0, 10)}`,
 		demandCaptureOrderStoreId: `1${index}`,
+		demandCaptureSegmentName: 'Large Store',
 		name: storeNameArray[index],
 		storesNumber: getRandomInt(0, 20),
 		type: '0',

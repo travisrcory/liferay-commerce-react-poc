@@ -8,7 +8,7 @@ import ReviewMatrixItemContext from '../context/ReviewMatrixItemContext';
 import RegionContext from '../context/RegionContext';
 import StoreContext from '../context/StoreContext';
 
-import {StoreType} from '../util/constants';
+import {StoreType, Status} from '../util/constants';
 import {IReviewMatrixStore} from '../util/interfaces';
 
 interface IMatrixProps {
@@ -33,7 +33,7 @@ const Matrix: React.FunctionComponent<IMatrixProps> = ({
 			}
 		});
 
-		return setReviewMatrixItems(
+		setReviewMatrixItems(
 			reviewMatrixItems.map(reviewMatrixItem => {
 				if (
 					demandCaptureOrderStoreIds.indexOf(
@@ -86,7 +86,7 @@ const Matrix: React.FunctionComponent<IMatrixProps> = ({
 								className="sticky-left-data"
 								headingTitle
 							>
-								{`${store.name} / ${store.storesNumber}`}
+								{`${store.demandCaptureSegmentName} - ${store.name}(${store.storesNumber})`}
 							</ClayTable.Cell>
 
 							<StoreStatus
@@ -95,7 +95,11 @@ const Matrix: React.FunctionComponent<IMatrixProps> = ({
 								setStateFn={setStores}
 								currentPhase={currentPhase}
 								index={index}
-								readOnly={readOnly}
+								readOnly={
+									(currentPhase !== Status.RUNNING &&
+										currentPhase !== Status.IN_REVIEW) ||
+									readOnly
+								}
 							/>
 
 							{renderMatrixCells(store)}
