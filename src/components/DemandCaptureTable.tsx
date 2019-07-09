@@ -21,9 +21,8 @@ import {
 	IReviewMatrixItem,
 } from '../util/interfaces';
 
-import {getString} from '../util/util';
+import {getString, useUpdatedItems} from '../util/util';
 
-declare const Liferay: any;
 
 declare global {
 	interface Window {
@@ -54,10 +53,28 @@ const DemandCaptureTable: React.FunctionComponent<IDemandCaptureTableProps> = ({
 	currentPhase,
 	updateOrderActionURL,
 }) => {
-	const stores = useState(initialReviewMatrixStoresProp);
+	const [stores, setStores] = useState(initialReviewMatrixStoresProp);
 	const [products, setProducts] = useState(initialReviewMatrixProductsProp);
+	const [reviewMatrixItems, setReviewMatrixItems] = useState(
+		initialReviewMatrixItemsProp
+	);
 
-	const reviewMatrixItems = useState(initialReviewMatrixItemsProp);
+	const updatedProducts: IReviewMatrixProduct[] = useUpdatedItems(
+		initialReviewMatrixProductsProp,
+		products,
+		'discount'
+	);
+	const updatedReviewMatrixItems: IReviewMatrixItem[] = useUpdatedItems(
+		initialReviewMatrixItemsProp,
+		reviewMatrixItems,
+		status === Status.RUNNING ? 'coverage' : 'quantity'
+	);
+	const updatedStores: IReviewMatrixStore[] = useUpdatedItems(
+		initialReviewMatrixStoresProp,
+		stores,
+		'type'
+	);
+
 	const [regionId, setRegionId] = useState<string | number>('all');
 	const [rejectForm, setRejectForm] = useState(false);
 
@@ -134,16 +151,19 @@ const DemandCaptureTable: React.FunctionComponent<IDemandCaptureTableProps> = ({
 				</div>
 			) : null}
 
-			<ClayTable className="table-max-height-1000" hover={false}>
+			<ClayTable className="table-max-height-780" hover={false}>
 				<ClayTable.Head>
 					<ClayTable.Row>
-						<ClayTable.Cell className="table-cell-expand sticky-top-data" headingCell>
-							{LanguageKeys.STORE_NAME} /{' '}
-							{LanguageKeys.NUMBER_OF_STORES}
+						<ClayTable.Cell
+							className="sticky-left-data sticky-top-data"
+							headingCell
+						>
+							{LanguageKeys.SEGMENT} - {LanguageKeys.STORE_NAME}(
+							{LanguageKeys.NUMBER_OF_STORES})
 						</ClayTable.Cell>
 
 						<ClayTable.Cell
-							className="table-cell-expand store-status-header sticky-top-data"
+							className="store-status-header sticky-top-data"
 							headingCell
 						>
 							{LanguageKeys.STORE_STATUS}
@@ -161,8 +181,10 @@ const DemandCaptureTable: React.FunctionComponent<IDemandCaptureTableProps> = ({
 					</ClayTable.Row>
 				</ClayTable.Head>
 				<ClayTable.Body>
-					<ReviewMatrixItemContext.Provider value={reviewMatrixItems}>
-						<StoreContext.Provider value={stores}>
+					<ReviewMatrixItemContext.Provider
+						value={[reviewMatrixItems, setReviewMatrixItems]}
+					>
+						<StoreContext.Provider value={[stores, setStores]}>
 							<RegionContext.Provider
 								value={[regionId, setRegionId]}
 							>
@@ -199,7 +221,7 @@ const DemandCaptureTable: React.FunctionComponent<IDemandCaptureTableProps> = ({
 					id={`${portletNamespace}reviewMatrixItemsJson`}
 					name={`${portletNamespace}reviewMatrixItemsJson`}
 					type="hidden"
-					value={JSON.stringify(reviewMatrixItems[0])}
+					value={JSON.stringify(updatedReviewMatrixItems)}
 				/>
 
 				<input
@@ -213,14 +235,14 @@ const DemandCaptureTable: React.FunctionComponent<IDemandCaptureTableProps> = ({
 					id={`${portletNamespace}reviewMatrixStores`}
 					name={`${portletNamespace}reviewMatrixStores`}
 					type="hidden"
-					value={JSON.stringify(stores[0])}
+					value={JSON.stringify(updatedStores)}
 				/>
 
 				<input
 					id={`${portletNamespace}reviewMatrixProducts`}
 					name={`${portletNamespace}reviewMatrixProducts`}
 					type="hidden"
-					value={JSON.stringify(products)}
+					value={JSON.stringify(updatedProducts)}
 				/>
 
 				<input

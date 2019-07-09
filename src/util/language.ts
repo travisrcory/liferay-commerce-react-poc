@@ -17,6 +17,7 @@ enum LanguageKeys {
 	QUANTITY = Liferay.Language.get('quantity'),
 	REGION = Liferay.Language.get('region'),
 	REJECT = Liferay.Language.get('reject'),
+	SEGMENT = Liferay.Language.get('SEGMENT'),
 	STATUS = Liferay.Language.get('status'),
 	STORE_COVERAGE = Liferay.Language.get('store-coverage'),
 	STORE_NAME = Liferay.Language.get('store-name'),

@@ -69,7 +69,7 @@ class ItemTotal extends React.Component<IItemTotalProps> {
 
 	render() {
 		return (
-			<ClayTable.Cell className="sticky-left-data">
+			<ClayTable.Cell>
 				${this.getProductTotal()}
 			</ClayTable.Cell>
 		);

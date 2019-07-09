@@ -70,6 +70,7 @@ class ItemCells extends React.Component<IItemCellsProps> {
 	render() {
 		return (
 			<ClayTable.Cell
+				className="table-cell-expand-small"
 				key={`reviewMatrixItemCell-${this.props.reviewMatrixItem.demandCaptureOrderStoreId}-${this.props.reviewMatrixItem.demandCaptureOrderProductId}`}
 			>
 				<div
