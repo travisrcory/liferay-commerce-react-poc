@@ -56,7 +56,9 @@ class TotalQuantity extends React.Component<ITotalQuantityProps> {
 
 	render() {
 		return (
-			<ClayTable.Cell>{this.getProductTotalQuantity()}</ClayTable.Cell>
+			<ClayTable.Cell className="text-right">
+				{this.getProductTotalQuantity()}
+			</ClayTable.Cell>
 		);
 	}
 }

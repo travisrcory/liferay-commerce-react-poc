@@ -83,10 +83,10 @@ const Matrix: React.FunctionComponent<IMatrixProps> = ({
 							key={`storeRow-${store.demandCaptureOrderStoreId}`}
 						>
 							<ClayTable.Cell
-								className="sticky-left-data"
+								className="border-right sticky-left-data"
 								headingTitle
 							>
-								{`${store.demandCaptureSegmentName} - ${store.name}(${store.storesNumber})`}
+								{`${store.demandCaptureSegmentName} - ${store.name} (${store.storesNumber})`}
 							</ClayTable.Cell>
 
 							<StoreStatus

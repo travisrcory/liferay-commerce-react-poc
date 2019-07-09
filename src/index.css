@@ -13,6 +13,8 @@ code {
 }
 
 .coverage-container input {
+  margin-left: auto;
+  max-width: 100px;
   padding-right: 22px;
   position: relative;
 }
@@ -33,18 +35,22 @@ code {
   min-width: 140px;
 }
 
-td.sticky-left-data {
+.table-max-height-1000 {
+  max-height: 1000px;
+}
+
+.table .sticky-left-data {
   left: 0;
   position: sticky;
   z-index: 5;
 }
 
-th.sticky-top-data {
-  top: 0;
+.table .sticky-top-data {
   position: sticky;
+  top: 0;
   z-index: 10;
 }
 
-.table-max-height-1000 {
-  max-height: 1000px;
+.table .sticky-left-data.sticky-top-data {
+  z-index: 15;
 }

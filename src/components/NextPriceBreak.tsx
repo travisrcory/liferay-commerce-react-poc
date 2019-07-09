@@ -10,7 +10,11 @@ interface INextPriceBreakProps {
 const NextPriceBreak: React.FunctionComponent<INextPriceBreakProps> = ({
 	reviewMatrixItems,
 }) => {
-	return <ClayTable.Cell>{reviewMatrixItems[0].quantity}</ClayTable.Cell>;
+	return (
+		<ClayTable.Cell className="text-right">
+			{reviewMatrixItems[0].quantity}
+		</ClayTable.Cell>
+	);
 };
 
 export default NextPriceBreak;

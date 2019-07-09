@@ -21,10 +21,6 @@ interface IItemCellsProps {
 // Using class to make use of shouldComponentUpdate to improve performance
 
 class ItemCells extends React.Component<IItemCellsProps> {
-	constructor(props: IItemCellsProps) {
-		super(props);
-	}
-
 	shouldComponentUpdate(nextProps: IItemCellsProps) {
 		if (this.props.currentPhase !== nextProps.currentPhase) {
 			return true;
@@ -79,15 +75,6 @@ class ItemCells extends React.Component<IItemCellsProps> {
 							this.props.currentPhase === Status.RUNNING,
 					})}
 				>
-					{/* <label
-						className='text-truncate'
-						htmlFor={`reviewMatrixItem-${this.props.reviewMatrixItem.demandCaptureOrderStoreId}-${this.props.reviewMatrixItem.demandCaptureOrderProductId}`}
-					>
-						{this.props.currentPhase === Status.RUNNING
-							? LanguageKeys.STORE_COVERAGE
-							: LanguageKeys.QUANTITY}
-					</label> */}
-
 					<input
 						className="form-control text-right"
 						id={`reviewMatrixItem-${this.props.reviewMatrixItem.demandCaptureOrderStoreId}-${this.props.reviewMatrixItem.demandCaptureOrderProductId}`}

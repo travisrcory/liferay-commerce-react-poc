@@ -14,6 +14,29 @@ import LanguageKeys from '../util/language';
 
 import {IReviewMatrixItem, IReviewMatrixStore} from '../util/interfaces';
 import DiscountInput from './DiscountInput';
+import {getString} from '../util/util';
+
+interface IRowProps {
+	label: string;
+	items: JSX.Element[];
+}
+
+const Row: React.FunctionComponent<IRowProps> = ({label, items}) => (
+	<>
+		<ClayTable.Row>
+			<ClayTable.Cell
+				className="border-right sticky-left-data"
+				headingTitle
+			>
+				{label}
+			</ClayTable.Cell>
+
+			<ClayTable.Cell></ClayTable.Cell>
+
+			{items}
+		</ClayTable.Row>
+	</>
+);
 
 interface ITotalsProps {
 	currentPhase: number;
@@ -199,78 +222,43 @@ const Totals: React.FunctionComponent<ITotalsProps> = ({
 			);
 		}
 
-		productIndex ++
+		productIndex++;
 	}
 
 	return (
 		<>
-			<ClayTable.Row>
-				<ClayTable.Cell className="sticky-left-data" headingTitle>
-					{LanguageKeys.TOTAL_QUANTITY}
-				</ClayTable.Cell>
+			<Row
+				label={getString(LanguageKeys.TOTAL_QUANTITY)}
+				items={totalQuantityRows}
+			/>
 
-				<ClayTable.Cell></ClayTable.Cell>
+			<Row label={getString(LanguageKeys.TOTAL)} items={totalRows} />
 
-				{totalQuantityRows}
-			</ClayTable.Row>
+			<Row
+				label={getString(LanguageKeys.TOTAL_AGGREGATED_QUANTITY)}
+				items={totalAggregatedQuantityRows}
+			/>
 
-			<ClayTable.Row>
-				<ClayTable.Cell className="sticky-left-data" headingTitle>
-					{LanguageKeys.TOTAL}
-				</ClayTable.Cell>
+			<Row
+				label={getString(LanguageKeys.NEXT_PRICE_BREAK)}
+				items={nextPriceBreakRow}
+			/>
 
-				<ClayTable.Cell></ClayTable.Cell>
-
-				{totalRows}
-			</ClayTable.Row>
-
-			<ClayTable.Row>
-				<ClayTable.Cell className="sticky-left-data" headingTitle>
-					{LanguageKeys.TOTAL_AGGREGATED_QUANTITY}
-				</ClayTable.Cell>
-
-				<ClayTable.Cell></ClayTable.Cell>
-
-				{totalAggregatedQuantityRows}
-			</ClayTable.Row>
-
-			<ClayTable.Row>
-				<ClayTable.Cell className="sticky-left-data" headingTitle>
-					{LanguageKeys.NEXT_PRICE_BREAK}
-				</ClayTable.Cell>
-
-				<ClayTable.Cell></ClayTable.Cell>
-
-				{nextPriceBreakRow}
-			</ClayTable.Row>
+			<Row
+				label={getString(LanguageKeys.TOTAL_AGGREGATED_QUANTITY)}
+				items={totalAggregatedQuantityRows}
+			/>
 
 			{showDiscountBox ? (
 				<>
-					<ClayTable.Row>
-						<ClayTable.Cell
-							className="sticky-left-data"
-							headingTitle
-						>
-							{LanguageKeys.DISCOUNT}
-						</ClayTable.Cell>
-
-						<ClayTable.Cell></ClayTable.Cell>
-
-						{discountRows}
-					</ClayTable.Row>
-
-					<ClayTable.Row>
-						<ClayTable.Cell
-							className="sticky-left-data"
-							headingTitle
-						>
-							{LanguageKeys.DISCOUNTED_TOTAL}
-						</ClayTable.Cell>
-
-						<ClayTable.Cell></ClayTable.Cell>
-
-						{discountedTotalsRows}
-					</ClayTable.Row>
+					<Row
+						label={getString(LanguageKeys.DISCOUNT)}
+						items={discountRows}
+					/>
+					<Row
+						label={getString(LanguageKeys.DISCOUNTED_TOTAL)}
+						items={discountedTotalsRows}
+					/>
 				</>
 			) : null}
 		</>

@@ -18,6 +18,10 @@ interface IItemTotalProps {
 // Using class to make use of shouldComponentUpdate to improve performance
 
 class ItemTotal extends React.Component<IItemTotalProps> {
+	constructor(props: IItemTotalProps) {
+		super(props);
+	}
+
 	shouldComponentUpdate(nextProps: IItemTotalProps) {
 		if (
 			this.props.currentPhase !== nextProps.currentPhase ||
@@ -39,7 +43,7 @@ class ItemTotal extends React.Component<IItemTotalProps> {
 				this.props.discount !== nextProps.discount ||
 				this.props.reviewMatrixItems[index].quantity !==
 					nextProps.reviewMatrixItems[index].quantity ||
-				nextProps.stores[index].type === StoreType.NRS
+				nextProps.stores[index].type == StoreType.NRS
 			) {
 				shouldComponentUpdate = true;
 				break;
@@ -69,7 +73,7 @@ class ItemTotal extends React.Component<IItemTotalProps> {
 
 	render() {
 		return (
-			<ClayTable.Cell>
+			<ClayTable.Cell className="text-right">
 				${this.getProductTotal()}
 			</ClayTable.Cell>
 		);

@@ -23,7 +23,6 @@ import {
 
 import {getString, useUpdatedItems} from '../util/util';
 
-
 declare global {
 	interface Window {
 		submitForm: (formId: string) => void;
@@ -139,7 +138,6 @@ const DemandCaptureTable: React.FunctionComponent<IDemandCaptureTableProps> = ({
 							label={getString(LanguageKeys.ALL)}
 							value={'all'}
 						/>
-
 						{options.map((item: {value: any; label: any}) => (
 							<ClaySelect.Option
 								key={`${item.value}`}
@@ -151,19 +149,23 @@ const DemandCaptureTable: React.FunctionComponent<IDemandCaptureTableProps> = ({
 				</div>
 			) : null}
 
-			<ClayTable className="table-max-height-780" hover={false}>
+			<ClayTable
+				className="table-max-height-780"
+				hover={false}
+				bordered={true}
+				headingNoWrap={true}
+			>
 				<ClayTable.Head>
 					<ClayTable.Row>
 						<ClayTable.Cell
-							className="sticky-left-data sticky-top-data"
+							className="border-right sticky-left-data sticky-top-data"
 							headingCell
 						>
-							{LanguageKeys.SEGMENT} - {LanguageKeys.STORE_NAME}(
-							{LanguageKeys.NUMBER_OF_STORES})
+							{`${LanguageKeys.SEGMENT} - ${LanguageKeys.STORE_NAME} (${LanguageKeys.NUMBER_OF_STORES})`}
 						</ClayTable.Cell>
 
 						<ClayTable.Cell
-							className="store-status-header sticky-top-data"
+							className="table-cell-expand store-status-header sticky-top-data"
 							headingCell
 						>
 							{LanguageKeys.STORE_STATUS}
@@ -172,7 +174,7 @@ const DemandCaptureTable: React.FunctionComponent<IDemandCaptureTableProps> = ({
 						{productHeaderTuple.map(([name, price], index) => (
 							<ClayTable.Cell
 								key={`tableHeaderTitle${index}`}
-								className="table-cell-expand sticky-top-data"
+								className="table-cell-expand text-right sticky-top-data"
 								headingCell
 							>
 								{name} ${numberFormat.format(price)}
